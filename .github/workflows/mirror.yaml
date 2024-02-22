@@ -1,0 +1,15 @@
+name: Codeberg mirror on gh
+
+on: workflow_dispatch
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - name: clone codeberg repo
+        run: git clone --bare https://codeberg.org/mhtajari/dcss-book
+
+      - name: push to mirror
+        working-directory: ./dcss-book.git
+
+        run: git push --mirror https://mohammad5305:${{ secrets.GITHUB_TOKEN }}@github.com/mohammad5305/dcss_book.git
