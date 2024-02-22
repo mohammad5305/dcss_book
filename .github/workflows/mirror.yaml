@@ -26,16 +26,31 @@ jobs:
        - name: Install deps
          uses: awalsh128/cache-apt-pkgs-action@latest
          with:
-           packages: texlive-base texlive-fonts-extra texlive-lang-arabic texlive-xetex noto-fonts rubber 
+           packages: noto-fonts fonts-noto-ui-core fonts-noto-ui-extra rubber jq
            version: 1.0
 
-       # - uses: mxschmitt/action-tmate@v3
+        # its not cached because of installation problems
+       # https://bugzilla.redhat.com/show_bug.cgi?id=1651282
+
+       - name: Install latex
+         run : | 
+           sudo apt update && sudo apt install texlive-xetex texlive-base texlive-fonts-extra texlive-lang-arabic texlive-extra-utils 
 
        - name: build
          run: make
 
        - name: push to codeberg release
          run: |
-          curl -X 'POST' 'https://codeberg.org/api/v1/repos/mhtajari/dcss-book/releases/1925484/assets?access_token=${{ secrets.API_TOKEN }}'
-          -H 'accept: application/json' \
-          -H 'Content-Type: multipart/form-data' -F 'attachment=@dcssbook.pdf;type=application/pdf'
+            ATTACH_ID=$(curl -X 'GET' \
+            'https://codeberg.org/api/v1/repos/mhtajari/dcss-book/releases/1925484/assets?access_token=${{ secrets.API_TOKEN }}' \
+            -H 'accept: application/json' | jq -r '.[-1].id')
+
+            echo $ATTACH_ID
+
+            curl -X 'DELETE' \
+            "https://codeberg.org/api/v1/repos/mhtajari/dcss-book/releases/1925484/assets/$ATTACH_ID?access_token=${{ secrets.API_TOKEN }}" -H 'accept: application/json'
+
+            curl -X 'POST' 'https://codeberg.org/api/v1/repos/mhtajari/dcss-book/releases/1925484/assets?access_token=${{ secrets.API_TOKEN }}' \
+            -H 'accept: application/json' \
+            -H 'Content-Type: multipart/form-data' \
+            -F 'attachment=@dcssbook.pdf;type=application/pdf'
