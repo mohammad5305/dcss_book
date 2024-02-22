@@ -10,3 +10,6 @@ pdf: $(OBJS).tex
 
 clean:
 	rm $(OBJS).aux $(OBJS).out $(OBJS).toc $(OBJS).log $(OBJS).rubbercache $(CHPTRS)
+
+install:
+	sudo pacman -S --needed texlive texlive-langarabic rubber
