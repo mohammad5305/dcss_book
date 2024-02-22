@@ -1,7 +1,7 @@
 LC = rubber
 CFLAGS = -m xelatex
 OBJS = dcssbook
-CHPTRS = ch-species.aux
+CHPTRS = ch-species.aux ch-backgrounds.aux
 
 all: pdf clean
 
