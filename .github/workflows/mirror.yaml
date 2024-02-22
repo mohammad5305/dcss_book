@@ -16,3 +16,26 @@ jobs:
         working-directory: ./dcss-book.git
 
         run: git push --mirror https://mohammad5305:${{ secrets.GITHUB_TOKEN }}@github.com/mohammad5305/dcss_book.git
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+       - name: Checkout
+         uses: actions/checkout@v4
+
+       - name: Install deps
+         uses: awalsh128/cache-apt-pkgs-action@latest
+         with:
+           packages: texlive-base texlive-fonts-extra texlive-lang-arabic texlive-xetex noto-fonts rubber 
+           version: 1.0
+
+       # - uses: mxschmitt/action-tmate@v3
+
+       - name: build
+         run: make
+
+       - name: push to codeberg release
+         run: |
+          curl -X 'POST' 'https://codeberg.org/api/v1/repos/mhtajari/dcss-book/releases/1925484/assets?access_token=${{ secrets.API_TOKEN }}'
+          -H 'accept: application/json' \
+          -H 'Content-Type: multipart/form-data' -F 'attachment=@dcssbook.pdf;type=application/pdf'
