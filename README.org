@@ -1,4 +1,4 @@
 #+TITLE: dungeon crawl stone soup آموزش بازی
 
 * License
-GPLv3
+CC-BY-SA-NC
