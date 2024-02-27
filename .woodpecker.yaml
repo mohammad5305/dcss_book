@@ -1,0 +1,20 @@
+steps:
+  - name: build
+    # image: pandoc/latex:2-alpine
+    image: nopreserveroot/rubber:2023.04.20
+    commands:
+      # since its an old ubuntu image
+      - curl -s -o /etc/apt/sources.list https://gist.githubusercontent.com/ishad0w/788555191c7037e249a439542c53e170/raw/3822ba49241e6fd851ca1c1cbcc4d7e87382f484/sources.list
+      - apt-get -y update && apt-get -y install make fonts-noto fonts-noto-ui-core fonts-noto-ui-extra
+      - make
+
+  - name: publish
+    image: woodpeckerci/plugin-gitea-release
+    settings:
+      base_url: https://codeberg.org
+      title: latest
+      target: main
+      files:
+        - "dcss-book.pdf"
+      api_key:
+        from_secret: RELEASE_TOKEN
