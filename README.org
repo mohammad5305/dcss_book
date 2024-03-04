@@ -1,4 +1,7 @@
 #+TITLE: dungeon crawl stone soup آموزش بازی
 
+* Table of Contents :toc:
+- [[#license][License]]
+
 * License
 CC-BY-SA-NC
