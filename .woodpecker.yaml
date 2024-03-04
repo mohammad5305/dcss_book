@@ -8,13 +8,29 @@ steps:
       - apt-get -y update && apt-get -y install make fonts-noto fonts-noto-ui-core fonts-noto-ui-extra
       - make
 
+  # since release plugin only accepts tag events
   - name: publish
-    image: woodpeckerci/plugin-gitea-release
-    settings:
-      base_url: https://codeberg.org
-      title: latest
-      target: main
-      files:
-        - "dcss-book.pdf"
-      api_key:
-        from_secret: RELEASE_TOKEN
+    image: curlimages/curl-base:8.6.0
+    secrets:
+      - source: release_token
+        target: TOKEN
+    # TODO: url as a env variable
+    commands:
+      - apk update && apk add jq
+      - export ATTACH_ID=$$(curl -s -X "GET" "https://codeberg.org/api/v1/repos/mhtajari/dcss-book/releases/1925484/assets?access_token=$TOKEN" | jq ".[-1].id")
+      - echo $${ATTACH_ID}
+      - curl -X "GET" "https://codeberg.org/api/v1/repos/mhtajari/dcss-book/releases/1925484/assets/?access_token=$TOKEN" | jq ".[-1].id"
+      - curl -X 'DELETE' "https://codeberg.org/api/v1/repos/mhtajari/dcss-book/releases/1925484/assets/$${ATTACH_ID}?access_token=$TOKEN" 
+      - curl -X 'POST' "https://codeberg.org/api/v1/repos/mhtajari/dcss-book/releases/1925484/assets?access_token=$TOKEN" -F "attachment=@dcssbook.pdf;type=application/pdf"
+
+
+  # - name: publish
+  #   image: woodpeckerci/plugin-gitea-release
+  #   settings:
+  #     base_url: https://codeberg.org
+  #     title: latest
+  #     target: main
+  #     files:
+  #       - "dcss-book.pdf"
+  #     api_key:
+  #       from_secret: RELEASE_TOKEN
