@@ -1,7 +1,7 @@
 LC = rubber
 CFLAGS = -m xelatex
 OBJS = dcssbook
-CHPTRS = ch-species.aux ch-backgrounds.aux ch-15rune.aux ch-caster.aux ch-fighter.aux ch-gods.aux ch-hunter.aux ch-keybinds.aux ch-macros.aux ch-resistances.aux ch-stats.aux ch-weapons.aux
+CHPTRS = introduction.aux ch-species.aux ch-backgrounds.aux ch-15rune.aux ch-caster.aux ch-fighter.aux ch-gods.aux ch-hunter.aux ch-keybinds.aux ch-macros.aux ch-resistances.aux ch-stats.aux ch-weapons.aux
 
 all: pdf clean
 
